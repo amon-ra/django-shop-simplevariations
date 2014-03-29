@@ -22,7 +22,7 @@ class SimplevariationCartDetails(CartDetails):
         #now we need to find out which options have been chosen by the user
         option_ids = []
         text_option_ids = {} # A dict of {TextOption.id:CartItemTextOption.text}
-        for key in self.request.POST.keys():
+        for key in list(self.request.POST.keys()):
             if key.startswith('add_item_option_group_'):
                 option_ids.append(self.request.POST[key])
             elif key.startswith('add_item_text_option_'):
@@ -43,8 +43,8 @@ class SimplevariationCartDetails(CartDetails):
                 )
                 
             cartitemtxtoptions = CartItemTextOption.objects.filter(
-                text_option__in=text_option_ids.keys(),
-                text__in=text_option_ids.values()
+                text_option__in=list(text_option_ids.keys()),
+                text__in=list(text_option_ids.values())
                 )
             
             if len(cartitemoptions) + len(cartitemtxtoptions) == (len(option_ids) + len(text_option_ids)):
@@ -75,7 +75,7 @@ class SimplevariationCartDetails(CartDetails):
             return self.success()
 
         post = self.request.POST
-        for key in self.request.POST.keys():
+        for key in list(self.request.POST.keys()):
             if key.startswith('add_item_option_group_'):
                 option = Option.objects.get(pk=int(post[key]))
                 cartitem_option = CartItemOption()
